@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="jquery-3.3.1.min.js"></script>
+  <meta charset="UTF-8">
+  <title>PowerCode</title>
+  <style>
+    .body {
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background-color: #333;
+      color: #fff;
+      font-family: consolas;
+      height: 80vh;
+      margin: 10vh 10vw;
+    }
+
+    .header, .content {
+      padding-top: 10px;
+      padding-left: 2vw;
+      padding-right: 2vw;
+    }
+
+    .header {
+      font-size: 3em;
+    }
+
+    .content {
+      font-size: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header" id="t">
+    </div>
+    <div class="content" id="l1"></div>
+    <div class="content" id="l2"></div>
+  </div>
+  <script>
+    var pages = [
+      ["#l1", "Starting 100Steps OS....", 50],
+      ["#l1", "Starting 100Steps OS....", 300, 24],
+      ["#l1", "Starting 100Steps OS.... [Done]", 10, 24],
+      ["#l2", "Initializing PowerCode System.... ", 50],
+      ["#l2", "Initializing PowerCode System.... ", 300, 34],
+      ["#l2", "Initializing PowerCode System.... [Done]", 10, 34],
+      ["#l2", "Initializing PowerCode System.... [Done]", 300, 40],
+      ["#l1", "", 10],
+      ["#l2", "", 10],
+      ["#l2", "", 300],
+      ["#t", "Introduction to Technique Department", 80]
+    ];
+
+    function *wraper(text, skip) {
+      if (skip == undefined)
+        skip = 0;
+      for (let i = skip; i < text.length + 1; ++i) {
+        yield text.substr(0, i);
+      }
+      return text;
+    }
+
+    function type(el, txt, delay, skip) {
+      return new Promise((resolve, reject) => {
+        let text = wraper(txt, skip);
+        let handle = setInterval(() => {
+          let r = text.next();
+          if (r.done) {
+            clearInterval(handle);
+            $(el).text(r.value);
+            resolve(r.value);
+            return;
+          }
+          $(el).text(r.value + "|");
+        }, delay);
+      });
+    }
+
+    function show(pages) {
+      pages.reduce((a, b) => {
+        return a.then(() => {
+          return type(b[0], b[1], b[2], b[3]);
+        });
+      });
+    }
+    pages.unshift(Promise.resolve());
+  </script>
+</body>
+</html>
