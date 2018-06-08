@@ -21,6 +21,7 @@
       padding-top: 10px;
       padding-left: 2vw;
       padding-right: 2vw;
+      white-space: pre-wrap;
     }
 
     .header {
@@ -30,28 +31,53 @@
     .content {
       font-size: 1.5em;
     }
+
+    #l1 {
+      font-size: 2em;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header" id="t">
-    </div>
+    <div class="header" id="t"></div>
     <div class="content" id="l1"></div>
     <div class="content" id="l2"></div>
   </div>
   <script>
     var pages = [
-      ["#l1", "Starting 100Steps OS....", 50],
-      ["#l1", "Starting 100Steps OS....", 300, 24],
-      ["#l1", "Starting 100Steps OS.... [Done]", 10, 24],
-      ["#l2", "Initializing PowerCode System.... ", 50],
-      ["#l2", "Initializing PowerCode System.... ", 300, 34],
-      ["#l2", "Initializing PowerCode System.... [Done]", 10, 34],
-      ["#l2", "Initializing PowerCode System.... [Done]", 300, 40],
-      ["#l1", "", 10],
-      ["#l2", "", 10],
-      ["#l2", "", 300],
-      ["#t", "Introduction to Technique Department", 80]
+      [
+        ["#l2", "Starting 100Steps OS....", 50],
+        ["", "", 100],
+        ["#l2", "Starting 100Steps OS.... [Done]", 10, 24],
+        ["#l2", "Starting 100Steps OS.... [Done]\nInitializing PowerCode System.... ", 50, 32],
+        ["", "", 100],
+        ["#l2", "Starting 100Steps OS.... [Done]\nInitializing PowerCode System.... [Done]\n\nPress Anykey to continue...", 10, 32+34],
+      ],
+      [
+        ["#t,#l1,#l2", ""],
+        ["#t", "Introduction to Technique Department", 60],
+        ['#l1', "* 部门简介\n* 部门工作\n* 部门特色\n* And More...", 80]
+      ],
+      [
+        ["#t,#l1,#l2", ""],
+        ["#t", "Technique Department - 部门简介", 20],
+        ["#l1", "<b>职能：</b>为百步梯线上产品的开发和运营提供技术保障\n\n<b>组成：</b>开发组、交互设计组\n\n<b>详细分组：</b>\n前端（包括小程序）\n后端\n移动端（安卓）\n移动端（iOS）\n交互设计", 50]
+      ],
+      [
+        ["#t,#l1,#l2", ""],
+        ["#t", "Technique Department - 部门工作", 20],
+        ["#l1", "<b>开发工作：</b>\n治愈系线上活动\n毕业季线上活动\n光音派对线上活动\n等等...\n\n<b>维护工作：</b>\n波板糖公众号、App\n易百分\n服务器维护运营\n等等...", 50]
+      ],
+      [
+        ["#t,#l1,#l2", ""],
+        ["#t", "Technique Department - 部门特色", 20],
+        ["#l1", "丰富的培训内容\n充足的项目机会\n珍贵的往届资源\n浓厚的技术与学习氛围\n丰富的内建活动\n更多惊喜...", 50]
+      ],
+      [
+        ["#t,#l1,#l2", ""],
+        ["#t", "Technique Department - 更多", 20],
+        ["#l1", "More than imagination....", 50]
+      ]
     ];
 
     function *wraper(text, skip) {
@@ -70,24 +96,44 @@
           let r = text.next();
           if (r.done) {
             clearInterval(handle);
-            $(el).text(r.value);
+            $(el).html(r.value);
             resolve(r.value);
             return;
           }
-          $(el).text(r.value + "|");
+          $(el).html(r.value + "|");
         }, delay);
       });
     }
 
-    function show(pages) {
+    function show(p) {
+      if (p == undefined) return;
+      let pages = JSON.parse(JSON.stringify(p));
+      pages.unshift(Promise.resolve());
       pages.reduce((a, b) => {
         return a.then(() => {
           return type(b[0], b[1], b[2], b[3]);
         });
       });
     }
-    pages.unshift(Promise.resolve());
-    show(pages);
+
+    var i = 0;
+    show(pages[i++]);
+    function *control() {
+      while (true) {
+        show(window.pages[window.i]);
+        yield ++window.i;
+      }
+    }
+    controller = control();
+    $(document).on('keyup', (e) => {
+      if (e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == ' ')
+        controller.next();
+      else if (e.key == 'ArrowLeft' || e.key == 'ArrowUp') {
+        window.i = window.i - 2;
+        if (window.i < 0) window.i = 0;
+        controller.next();
+      }
+    });
   </script>
 </body>
 </html>
