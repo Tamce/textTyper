@@ -126,7 +126,20 @@
       }
     }
     controller = control();
+
+    var size = [3, 1.5, 2];
     $(document).on('keyup', (e) => {
+      if (e.key == '+') {
+        window.size = window.size.map(e => e + 0.1);
+        $(".header").css('font-size', size[0] + 'em');
+        $("#l1").css('font-size', size[1] + 'em');
+        $("#l2").css('font-size', size[2] + 'em');
+      } else if (e.key == '-') {
+        window.size = window.size.map(e => e - 0.1);
+        $(".header").css('font-size', size[0] + 'em');
+        $("#l1").css('font-size', size[1] + 'em');
+        $("#l2").css('font-size', size[2] + 'em');
+      }
       if (e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == ' ')
         controller.next();
       else if (e.key == 'ArrowLeft' || e.key == 'ArrowUp') {
