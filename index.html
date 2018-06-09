@@ -23,6 +23,7 @@
       padding-left: 2vw;
       padding-right: 2vw;
       white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     .header {
@@ -72,12 +73,13 @@
       [
         ["#t,#l1,#l2", ""],
         ["#t", "Technique Department - 部门特色", 20],
-        ["#l1", "丰富的培训内容\n充足的项目机会\n珍贵的往届资源\n浓厚的技术与学习氛围\n丰富的内建活动\n更多惊喜...", 50]
+        ["#l1", "<b>我们有：</b>\n&gt; 丰富的培训内容\n&gt; 充足的项目机会\n&gt; 珍贵的往届资源\n&gt; 浓厚的技术与学习氛围\n&gt; 丰富的内建活动\n&gt; 更多惊喜...", 50],
+        ["#l2", '<img src="http://mmbiz.qpic.cn/mmbiz_jpg/Kic6Kp89DL1EOjBTr4Ate78rsyCT9ONKibuo6vflZ8gZibDTeCS8V45YWtaNDwqblJ2gsVVeWtiaZOILOqW7wr8Q2g/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1">', 10]
       ],
       [
         ["#t,#l1,#l2", ""],
         ["#t", "Technique Department - 更多", 20],
-        ["#l1", "More than imagination....", 50]
+        ["#l1", "More than imagination....", 50],
       ]
     ];
 
@@ -102,6 +104,9 @@
             return;
           }
           $(el).html(r.value + "|");
+          if ($(el).text() == "") {
+            $(el).text(r.value + "|");
+          }
         }, delay);
       });
     }
@@ -122,7 +127,8 @@
     function *control() {
       while (true) {
         show(window.pages[window.i]);
-        yield ++window.i;
+        if (window.i < window.pages.length) ++window.i;
+        yield window.i;
       }
     }
     controller = control();
